@@ -1,7 +1,260 @@
-<!DOCTYPE html> 
-<html> 
-	<head> 
-	</head> 
-	<body> 
-	</body> 
-</html> 
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: table
+        }
+
+        div {
+            margin: 10px;
+        }
+
+        .binary {
+            font-weight: bolder;
+        }
+
+        .content {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <div>
+            <p id="binaryCode" class="binary"></p>
+        </div>
+        <div>
+            <div>
+                <input type="checkbox" id="lowerString" name="lowerString" onclick="checkboxChanged()" checked>
+                <label for="lowerString">Nur Kleinbuchstaben</label>
+                <input type="checkbox" id="help" name="help" onclick="checkboxChangedForHelp()">
+                <label for="lowerString">Hilfe</label>
+            </div>
+        </div>
+        <div>
+            <input id="solution"></input>
+            <button id="solve" onclick="solve();">Lösen</button>
+        </div>
+        <div id="solved">
+            <p>Warte auf eine Lösung</p>
+        </div>
+
+        <div id="asciiTable">
+
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script>
+    const words = ["Alphabet",
+        "Altenheim",
+        "Amulett",
+        "Anlage",
+        "Arm",
+        "Aufkleber",
+        "Auspuff",
+        "Auto",
+        "Ball",
+        "Bar",
+        "Baum",
+        "Bestellliste",
+        "Betttuch",
+        "Biokraftstoff",
+        "Blatt",
+        "Buch",
+        "Callcenter",
+        "Castingshow",
+        "Chinese",
+        "Clip",
+        "Computer",
+        "Dach",
+        "Dichtung",
+        "Disco",
+        "Dollar",
+        "Dorfschule",
+        "Eimer",
+        "Eisenbahn",
+        "Engel",
+        "Erdöl",
+        "Ergebnis",
+        "Fahrrad",
+        "Feuerlöscher",
+        "Film",
+        "Foto",
+        "Freiheit",
+        "Gehirn",
+        "Gehweg",
+        "Grundgesetz",
+        "Grundstück",
+        "Gymnasium",
+        "Hafen",
+        "Haus",
+        "Heimatland",
+        "Holz",
+        "Horn",
+        "Igel",
+        "Impfstoff",
+        "Information",
+        "Infusion",
+        "Insel",
+        "Jachthafen",
+        "Jacke",
+        "Jäger",
+        "Jobcenter",
+        "Jugendclub",
+        "Kaktus",
+        "Kamm",
+        "Kammer",
+        "Keller",
+        "Kugel",
+        "Leber",
+        "Leiste",
+        "Leiter",
+        "Liebe",
+        "Locher",
+        "Maus",
+        "Monat",
+        "Monitor",
+        "Musikstück",
+        "Muskel",
+        "Nabelschnur",
+        "Nachbar",
+        "Nagel",
+        "Nase",
+        "Natur",
+        "Nonne",
+        "Notunterkunft",
+        "Obst",
+        "Ochse",
+        "Offizier",
+        "Orgel",
+        "Osterei",
+        "Paket",
+        "Papier",
+        "Passwort",
+        "Politiker",
+        "Poster",
+        "Quader",
+        "Quark",
+        "Quecksilber",
+        "Quelle",
+        "Quastenflosser",
+        "Rabe",
+        "Radio",
+        "Rakete",
+        "Reifen",
+        "Rettungswagen",
+        "Ritter",
+        "Sand",
+        "Scanner",
+        "Schloss",
+        "Stein",
+        "Strauch",
+        "Tasche",
+        "Taschenrechner",
+        "Tastatur",
+        "Taste",
+        "Tiger",
+        "Tisch",
+        "Turnschuh",
+        "Uhr",
+        "Ulme",
+        "Umschlagplatz",
+        "Umwelt",
+        "Unwetter",
+        "Vanille",
+        "Vater",
+        "Verdauung",
+        "Verkehr",
+        "Versicherung",
+        "Vogel",
+        "Waage",
+        "Waggon",
+        "Waschzeug",
+        "Wasser",
+        "Wort",
+        "Xylophon",
+        "Yogalehrer",
+        "Zahn",
+        "Zeichen",
+        "Zeitung",
+        "Zentrum"];
+        printRandomWord();
+    
+
+    var element = document.getElementById("solution");
+    element.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            document.getElementById("solve").click();
+        }
+    });
+
+    function printRandomWord(){
+        word = changeWordAccordingToUserOptions(pickRandomWort());
+        convertAndDisplay();
+    }
+
+    function checkboxChanged() {
+        word = changeWordAccordingToUserOptions(word);
+        convertAndDisplay();
+    }
+
+    function checkboxChangedForHelp() {
+        asciiTable = document.getElementById("asciiTable");
+        asciiTable.innerHTML = "";
+
+        if (document.getElementById("help").checked) {
+            for (var i = 97; i < 123; i++) {
+                letter = String.fromCharCode(i)
+                asciiTable.innerHTML += `${letter}: ${letter.charCodeAt(0).toString(2)}<br>`;
+            }
+        }
+    }
+
+    function changeWordAccordingToUserOptions(randomWord) {
+        if (document.getElementById("lowerString").checked)
+            return randomWord.toLowerCase();
+        else
+            return randomWord.charAt(0).toUpperCase() + randomWord.slice(1);
+    }
+
+    function pickRandomWort() {
+        randomWord = words[Math.floor(Math.random() * words.length)];
+        return randomWord;
+    }
+
+    function convertAndDisplay() {
+
+        var output = document.getElementById("binaryCode");
+        output.innerHTML = "";
+
+        for (i = 0; i < word.length; i++) {
+            output.innerHTML += word[i].charCodeAt(0).toString(2) + " ";
+        }
+    }
+
+    function solve() {
+        var userGuess = document.getElementById("solution").value;
+
+        var output = document.getElementById("solved");
+        if (userGuess === word) 
+        {
+            output.innerText = `Richtig. Es war '${word}'. Nächste Runde`;
+            document.getElementById("solution").value = "";
+            printRandomWord();
+        }
+        else output.innerText = "Falsch";
+    }
+</script>
